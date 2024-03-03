@@ -1,58 +1,29 @@
-# import cv2
-
-# # RTSP URL of the stream
-# rtsp_url = 'rtsp://localhost:8554/mystream'
-
-# # Create a VideoCapture object
-# cap = cv2.VideoCapture(rtsp_url)
-
-# # Check if the camera opened successfully
-# if not cap.isOpened():
-#     print("Error: Unable to open RTSP stream.")
-#     exit(1)
-
-# # Read frames from the stream
-# #while True:
-# ret, frame = cap.read()
-# if not ret:
-#     print("Error: Unable to read frame.")
-#     exit(1)
-
-# # Display the frame
-# cv2.imshow('Frame', frame)
-
-# # Break the loop when 'q' is pressed
-# if cv2.waitKey() & 0xFF == ord('q'):
-    
-
-# # Release the VideoCapture object and close all OpenCV windows
-# cap.release()
-# cv2.destroyAllWindows()
-
 import os
+import logging
+import time
 import cv2
+from stream_loader import RTSPOpenCVStreamLoader
+from exceptions import VideoCapError
 
-rtsp_url = os.environ['RTSP_URL']
+# logging setup
+logger = logging.getLogger(__name__)
+logging.basicConfig(level = logging.INFO)
 
-# Create a VideoCapture object
-cap = cv2.VideoCapture(rtsp_url)
+# stream loader setup
+stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
 
-# Check if the camera opened successfully
-if not cap.isOpened():
-    print("Error: Unable to open RTSP stream.")
-    exit()
-    
-# Read a single frame from the stream
-ret, frame = cap.read()
 
-# Check if the frame was read successfully
-if ret:
-    # Display the frame
-    cv2.imshow('Frame', frame)
-    cv2.waitKey(0)  # Wait indefinitely until any key is pressed
-else:
-    print("Error: Unable to read frame.")
 
-# Release the VideoCapture object and close all OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
+
+    while True:
+        try:
+            frame = stream_loader.load_frame()
+            #cv2.imshow("Frame", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            #cv2.waitKey(0)
+            print(frame.shape)
+        except VideoCapError:
+            logger.error("Failed to read frame from RTSP stream")
+            time.sleep(0.5)
+            
