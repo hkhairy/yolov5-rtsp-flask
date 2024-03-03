@@ -23,11 +23,8 @@ if __name__ == "__main__":
     while True:
         try:
             frame = stream_loader.load_frame()
-            preprocessed_frame_output = Preprocessor.preprocess(frame)
-            scale_factor = preprocessed_frame_output.scale_factor
-            preprocessed_frame_rgb = preprocessed_frame_output.preprocessed_img
-
-            detected_objects = model.predict_and_get_detected_objects(preprocessed_frame_rgb)
+            preprocessed_frame, scale_factor = Preprocessor.preprocess(frame)
+            detected_objects = model.predict_and_get_detected_objects(preprocessed_frame)
             print(detected_objects)
             
         except VideoCapError as e:

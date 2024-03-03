@@ -18,10 +18,6 @@ class DetectedObject:
     def __repr__(self):
         return f"{self.class_name} ({self.class_index}): {self.score:.2f}"
     
-class PreProcessingOutput:
-    def __init__(self, preprocessed_img: NDArray[Shape["1, 3, 640, 640"], np.float16], scale_factor: float):
-        self.preprocessed_img = preprocessed_img
-        self.scale_factor = scale_factor
 
 
 
@@ -30,7 +26,7 @@ class Preprocessor:
     def preprocess(
         img_rgb: NDArray[Shape["*,*,3"], np.uint8],
         canonical_size: int = 640
-    ) -> PreProcessingOutput:
+    ) -> tuple[NDArray[Shape["1, 3, 640, 640"], np.float16], float]:
         """Preprocess the image to be in a format that the Yolov5 model expects
 
         1. Create a square image by padding the smaller dimension with zeros
@@ -46,8 +42,7 @@ class Preprocessor:
             canonical_size (int, optional): The size to resize the image to. Defaults to 640.
         
         Returns:
-            PreProcessingOutput: A struct like object with The preprocessed image in BCHW format
-                and the Scale factor used to resize the image
+            tuple[NDArray[Shape["1, 3, 640, 640"], np.float16], float]: The preprocessed image and the scale factor
         """
         # resize, maintaining aspect ratio
         height, width, c = img_rgb.shape
@@ -73,10 +68,13 @@ class Preprocessor:
         # transpose to BCHW from BHWC
         preprocessed = preprocessed.transpose([0, 3, 1, 2])
 
-        return PreProcessingOutput(preprocessed, scale_factor)
+        return (preprocessed, scale_factor)
 
 
 class Model:
+    """A class wrapper for the ONNX model and utility functions for the Yolov5 model
+        like non-max-suppression, and getting the detected objects
+    """
     def __init__(self, model_path: str):
         self.model_path = model_path
         self.model = ort.InferenceSession(model_path)
@@ -163,6 +161,7 @@ class Model:
         important_outputs = prediction_output[boxes_indices]
         boxes = important_outputs[:, :4]
         boxes = self.convert_xcyc_to_xyxy(boxes)
+        boxes = np.clip(boxes, 0, 640) # clip the boxes to the image size
 
         predicted_indices = np.argmax(important_outputs[:, 5:], axis = 1)
         predicted_classes = [self.get_class_name(index) for index in predicted_indices]
@@ -220,5 +219,6 @@ class Model:
         class_map = class_map.replace("'", "\"")
         # load the json as a python dict
         class_map:dict[int, str] = json.loads(class_map)
+        # convert the keys to ints for later use
         class_map = {int(key):val for key, val in class_map.items()}
         return class_map
