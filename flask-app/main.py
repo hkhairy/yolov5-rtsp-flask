@@ -16,6 +16,7 @@ stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_
 
 if __name__ == "__main__":
     stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
+    time.sleep(5) # Wait for the thread to start
 
     while True:
         try:

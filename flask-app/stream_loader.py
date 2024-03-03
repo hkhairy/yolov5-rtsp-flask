@@ -31,7 +31,6 @@ class RTSPOpenCVStreamLoader(StreamLoader):
             daemon=True
         )
         self._thread.start()
-        time.sleep(5) # Wait for the thread to start
     
     def load_frame(self) -> NDArray[Shape["*,*,3"], np.uint8]:
         """Returns a numpy array of the current frame, in RGB format, with the shape (height, width, 3)
