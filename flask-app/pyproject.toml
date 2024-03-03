@@ -9,6 +9,7 @@ packages = [{include = "flask_app", from = "src"}]
 python = "^3.9"
 opencv-python = "^4.9.0.80"
 nptyping = "^2.5.0"
+onnxruntime = "^1.17.1"
 
 
 [build-system]
