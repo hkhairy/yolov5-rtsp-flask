@@ -12,4 +12,4 @@ services:
       - 8189:8189/udp
     volumes:
       - ./${STOCK_VIDEO_RELATIVE_PATH}:/stock_video.mp4
-      - ./mediamtx.yml:/mediamtx.yml
+      - ./rtsp-server/mediamtx.yml:/mediamtx.yml
