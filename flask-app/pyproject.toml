@@ -3,8 +3,7 @@ name = "flask-app"
 version = "0.1.0"
 description = ""
 authors = ["Hazem Khairy <hazem.hassan.kh@gmail.com>"]
-readme = "README.md"
-packages = [{include = "flask_app"}]
+packages = [{include = "flask_app", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"

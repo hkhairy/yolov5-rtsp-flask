@@ -5,7 +5,7 @@ import time
 import numpy as np
 from nptyping import NDArray, Shape
 import cv2
-from exceptions import VideoCapError
+from flask_app.exceptions import VideoCapError
 
 logger = logging.getLogger(__name__)
 

@@ -2,8 +2,8 @@ import os
 import logging
 import time
 import cv2
-from stream_loader import RTSPOpenCVStreamLoader
-from exceptions import VideoCapError
+from flask_app.stream_loader import RTSPOpenCVStreamLoader
+from flask_app.exceptions import VideoCapError
 
 # logging setup
 logger = logging.getLogger(__name__)
