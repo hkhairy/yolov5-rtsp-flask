@@ -4,27 +4,35 @@ import time
 import cv2
 from flask_app.stream_loader import RTSPOpenCVStreamLoader
 from flask_app.exceptions import VideoCapError
+from flask_app.yolov5 import Model, Preprocessor
 
 # logging setup
 logger = logging.getLogger(__name__)
 logging.basicConfig(level = logging.INFO)
 
 # stream loader setup
-stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
-
+#stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
+stream_loader = RTSPOpenCVStreamLoader("rtsp://localhost:8554/stream", 5)
 
 
 if __name__ == "__main__":
-    stream_loader = RTSPOpenCVStreamLoader(os.getenv("RTSP_URL"), os.getenv("THREAD_RETRY_INTERVAL"))
+    
     time.sleep(5) # Wait for the thread to start
+    model = Model("yolov5s.onnx")
 
     while True:
         try:
             frame = stream_loader.load_frame()
-            #cv2.imshow("Frame", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
-            #cv2.waitKey(0)
-            print(frame.shape)
-        except VideoCapError:
-            logger.error("Failed to read frame from RTSP stream")
-            time.sleep(0.5)
+            preprocessed_frame_output = Preprocessor.preprocess(frame)
+            scale_factor = preprocessed_frame_output.scale_factor
+            preprocessed_frame_rgb = preprocessed_frame_output.preprocessed_img
+
+            detected_objects = model.predict_and_get_detected_objects(preprocessed_frame_rgb)
+            print(detected_objects)
+            
+        except VideoCapError as e:
+            logger.error(e)
+            
+        except Exception as e:
+            logger.error(e)
             
