@@ -13,3 +13,19 @@ services:
     volumes:
       - ./${STOCK_VIDEO_RELATIVE_PATH}:/stock_video.mp4
       - ./rtsp-server/mediamtx.yml:/mediamtx.yml
+
+  flask_server:
+    build:
+      context: flask-app/
+      dockerfile: Dockerfile
+      args:
+        - yolo_model=yolov5s.onnx
+    container_name: flask_server
+    ports:
+      - 8080:8080
+    volumes:
+      - ./output:/output
+    env_file:
+      - ./flask-app/.env.container
+    depends_on:
+      - rtsp_server
