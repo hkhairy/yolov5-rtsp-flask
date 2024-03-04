@@ -23,6 +23,8 @@ class RTSPOpenCVStreamLoader(StreamLoader):
     """A StreamLoader that loads frames from an RTSP stream using OpenCV"""
 
     def __init__(self, rtsp_url: str, retry_interval: int):
+        if rtsp_url is None:
+            raise ValueError("RTSP URL cannot be None")
         self._rtsp_url = rtsp_url
         self._is_running = False
         self._current_frame = None
