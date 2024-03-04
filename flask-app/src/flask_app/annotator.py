@@ -38,7 +38,7 @@ class Annotator:
     def __init__(
         self,
         detected_objects: list[DetectedObject],
-        original_image: NDArray[Shape[Any, Any, 3], np.uint8],
+        original_image: NDArray[Shape["*,*,3"], np.uint8],
         scale_factor: float,
     ):
         self.detected_objects = detected_objects
