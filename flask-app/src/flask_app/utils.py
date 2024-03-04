@@ -46,11 +46,7 @@ def get_config_env_vars() -> ConfigDict:
     else:
         config_dict["OBJECT_DETECTION_SCORE"] = float(os.getenv("OBJECT_DETECTION_SCORE"))
 
-    if os.getenv("OUTPUT_DIR") is None:
-        logger.warning("OUTPUT_DIR environment variable is not set, defaulting to ./output")
-        config_dict["OUTPUT_DIR"] = "output"
-    else:
-        config_dict["OUTPUT_DIR"] = os.getenv("OUTPUT_DIR")
+    config_dict["OUTPUT_DIR"] = "output"
     
     if os.getenv("ONNX_LOCAL_FILE_PATH") is None:
         logger.warning("ONNX_LOCAL_FILE_PATH environment variable is not set, defaulting yolov5.onnx")
