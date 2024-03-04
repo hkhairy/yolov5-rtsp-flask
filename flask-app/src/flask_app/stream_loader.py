@@ -64,7 +64,7 @@ class RTSPOpenCVStreamLoader(StreamLoader):
                     self._is_running = False
                     break
 
-                logger.info("Frame read from RTSP stream")
+                logger.debug("Frame read from RTSP stream")
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 self._current_frame = np.array(frame)
                 time.sleep(0.01)
