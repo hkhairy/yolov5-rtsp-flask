@@ -48,7 +48,7 @@ def get_config_env_vars() -> ConfigDict:
 
     if os.getenv("OUTPUT_DIR") is None:
         logger.warning("OUTPUT_DIR environment variable is not set, defaulting to ./output")
-        config_dict["OUTPUT_DIR"] = "output/"
+        config_dict["OUTPUT_DIR"] = "output"
     else:
         config_dict["OUTPUT_DIR"] = os.getenv("OUTPUT_DIR")
     
