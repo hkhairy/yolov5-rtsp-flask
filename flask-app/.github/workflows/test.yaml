@@ -1,0 +1,46 @@
+name: test
+
+# this workflow would be updated if we decide to have a more mature setup and
+# have dev branch alongside branch protection rules for master and dev.
+# For our purposes, since I'm the only one working on this, I'm just going to make it simple.
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'flask-app/pyproject.toml'
+      - 'flask-app/poetry.lock'
+      - 'flask-app/main.py'
+      - 'flask-app/tests/**'
+      - 'flask-app/src/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'flask-app/pyproject.toml'
+      - 'flask-app/poetry.lock'
+      - 'flask-app/main.py'
+      - 'flask-app/tests/**'
+      - 'flask-app/src/**'
+    
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      
+      - name: Setup Poetry
+        run: pip install poetry==1.7.1
+      
+      - name: Install dependencies
+        run: poetry install
+
+      - name: run tests
+        run: poetry run pytest tests/
