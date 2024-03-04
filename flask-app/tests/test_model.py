@@ -1,11 +1,10 @@
-import pytest
 import numpy as np
-from flask_app.yolov5 import Model, Preprocessor, ModelLoader
+from flask_app.yolov5 import Model, ModelLoader
 
 def test_post_processing_nms():
     """When there are overlapping boxes, the non-max suppression should only return one box
     """
-    model = Model(ModelLoader("yolov5s.onnx").model)
+    model = Model(ModelLoader.load_model("yolov5s.onnx"))
     
     xc, yc, w, h, score = 0.5, 0.5, 0.5, 0.5, 0.5
     overlapping_boxes = np.array([[xc, yc, w, h, score]])
@@ -35,4 +34,3 @@ def test_post_processing_detected_object():
 
     assert detected_object[0].score == predicted_class_score
     assert np.all(detected_object[0].box == np.array((0.5, 0.5, 1.5, 1.5))) # x1, y1, x2, y2
-
