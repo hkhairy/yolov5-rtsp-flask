@@ -206,7 +206,7 @@ class Model:
 
         class_scores = important_outputs[:, 5:]
         predicted_indices = np.argmax(class_scores, axis=1)
-        predicted_class_scores = class_scores[:, predicted_indices].squeeze(0)
+        predicted_class_scores = class_scores[:, predicted_indices]
         predicted_classes = [self.get_class_name(index) for index in predicted_indices]
 
         detected_objects = [
