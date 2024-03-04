@@ -77,5 +77,5 @@ jobs:
         with:
           context: flask-app/
           push: true
-          tags: 'ghcr.io/hkhairy/flask_app:${{ github.run_id }}'
+          tags: 'ghcr.io/hkhairy/flask_app:${{ github.run_id }},ghcr.io/hkhairy/flask_app:latest' 
 
