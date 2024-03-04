@@ -19,7 +19,7 @@ def test_post_processing_nms():
 def test_post_processing_detected_object():
     """given the model output after nms, the detected object should have the correct score, and correct boundaries
     """
-    model = Model(ModelLoader("yolov5s.onnx").model)
+    model = Model(ModelLoader.load_model("yolov5s.onnx"))
 
     xc, yc, w, h, object_detection_score = 1, 1, 1, 1, 0.9
     predicted_class_index = 0

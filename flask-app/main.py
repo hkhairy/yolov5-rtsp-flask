@@ -19,7 +19,7 @@ stream_loader = RTSPOpenCVStreamLoader("rtsp://localhost:8554/stream", 5)
 
 if __name__ == "__main__":
     time.sleep(5)  # Wait for the thread to start
-    model = Model(ModelLoader("yolov5s.onnx").model)
+    model = Model(ModelLoader.load_model("yolov5s.onnx"))
 
     while True:
         try:

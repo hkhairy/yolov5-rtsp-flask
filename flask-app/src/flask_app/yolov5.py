@@ -83,18 +83,25 @@ class Preprocessor:
         return (preprocessed, scale_factor)
 
 class ModelLoader():
-    def __init__(self, model_path: str):
-        self.model_path = model_path
+    @staticmethod
+    def load_model(model_path: str) -> ort.InferenceSession:
+        """Load the model from the given path, or download it if it doesn't exist
+
+        Args:
+            model_path (str): the local path to the model
+
+        Returns:
+            ort.InferenceSession: The Inference Session object
+        """
         if os.path.exists(model_path):
             logger.info("Found the model file")
-            self.model = ort.InferenceSession(model_path)
         else:
             logger.warn("Model file not found, trying to download it")
             model_binaries = requests.get("https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx")
             with open(model_path, "wb") as f:
                 f.write(model_binaries.content)
             logger.info("Model downloaded")
-        self.model = ort.InferenceSession(model_path)
+        return ort.InferenceSession(model_path)
 
 
 class Model:
