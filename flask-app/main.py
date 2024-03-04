@@ -51,7 +51,7 @@ def object_detection():
 
     # write the frame to a file
     time_now = datetime.datetime.now().isoformat()
-    filename = f"annotated_frame_{time_now}.jpg"
+    filename = f"{config['OUTPUT_DIR']}/annotated_frame_{time_now}.jpg"
     # before writing using cv2, we need to convert the color space from RGB to BGR
     cv2.imwrite(filename, cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR))
     return jsonify({"filename" : filename})
