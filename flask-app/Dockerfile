@@ -1,5 +1,6 @@
 ######################################## Stage 1 ######################################
 FROM python:3.11 AS Builder
+LABEL org.opencontainers.image.source="https://github.com/hkhairy/yolov5-rtsp-flask"
 
 RUN pip install "poetry==1.7.1" && poetry self add "poetry-plugin-export==1.6.0"
 ARG yolo_model="yolov5s.onnx"
