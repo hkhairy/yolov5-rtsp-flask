@@ -1,3 +1,5 @@
+import os
+import requests
 import json
 import re
 import logging
@@ -80,15 +82,28 @@ class Preprocessor:
         logger.debug(f"Preprocessed image shape: {preprocessed.shape}, scale factor is {scale_factor}")
         return (preprocessed, scale_factor)
 
+class ModelLoader():
+    def __init__(self, model_path: str):
+        self.model_path = model_path
+        if os.path.exists(model_path):
+            logger.info("Found the model file")
+            self.model = ort.InferenceSession(model_path)
+        else:
+            logger.warn("Model file not found, trying to download it")
+            model_binaries = requests.get("https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx")
+            with open(model_path, "wb") as f:
+                f.write(model_binaries.content)
+            logger.info("Model downloaded")
+        self.model = ort.InferenceSession(model_path)
+
 
 class Model:
     """A class wrapper for the ONNX model and utility functions for the Yolov5 model
     like non-max-suppression, and getting the detected objects
     """
 
-    def __init__(self, model_path: str):
-        self.model_path = model_path
-        self.model = ort.InferenceSession(model_path)
+    def __init__(self, model: ort.InferenceSession):
+        self.model = model
         self.class_mapping = Model._get_class_index_to_name_mapping(self.model)
 
     def predict(

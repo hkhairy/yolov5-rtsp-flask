@@ -4,7 +4,7 @@ import time
 import cv2
 from flask_app.stream_loader import RTSPOpenCVStreamLoader
 from flask_app.exceptions import VideoCapError
-from flask_app.yolov5 import Model, Preprocessor
+from flask_app.yolov5 import Model, Preprocessor, ModelLoader
 from flask_app.annotator import Annotator
 from flask import Flask
 
@@ -19,7 +19,7 @@ stream_loader = RTSPOpenCVStreamLoader("rtsp://localhost:8554/stream", 5)
 
 if __name__ == "__main__":
     time.sleep(5)  # Wait for the thread to start
-    model = Model("yolov5s.onnx")
+    model = Model(ModelLoader("yolov5s.onnx").model)
 
     while True:
         try:
