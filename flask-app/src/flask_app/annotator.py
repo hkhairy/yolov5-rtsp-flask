@@ -1,4 +1,3 @@
-from typing import Any
 import logging
 import cv2
 import numpy as np
