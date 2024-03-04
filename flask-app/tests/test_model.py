@@ -11,7 +11,7 @@ def test_post_processing_nms():
     model = Model(
         ModelLoader.load_model(
             config["ONNX_LOCAL_FILE_PATH"],
-            config["ONNX_DOWNLOAD_URL"]
+            config["ONNX_FALLBACK_DOWNLOAD_URL"]
         ),
         config["IOU_THRESHOLD"],
         config["OBJECT_DETECTION_SCORE"]
@@ -32,7 +32,7 @@ def test_post_processing_detected_object():
     model = Model(
         ModelLoader.load_model(
             config["ONNX_LOCAL_FILE_PATH"],
-            config["ONNX_DOWNLOAD_URL"]
+            config["ONNX_FALLBACK_DOWNLOAD_URL"]
         ),
         config["IOU_THRESHOLD"],
         config["OBJECT_DETECTION_SCORE"]

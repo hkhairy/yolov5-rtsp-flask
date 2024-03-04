@@ -12,7 +12,7 @@ class ConfigDict(TypedDict):
     OBJECT_DETECTION_SCORE: float
     OUTPUT_DIR: str
     ONNX_LOCAL_FILE_PATH: str
-    ONNX_DOWNLOAD_URL: str
+    ONNX_FALLBACK_DOWNLOAD_URL: str
 
 
 def get_config_env_vars() -> ConfigDict:
@@ -58,10 +58,10 @@ def get_config_env_vars() -> ConfigDict:
     else:
         config_dict["ONNX_LOCAL_FILE_PATH"] = os.getenv("ONNX_LOCAL_FILE_PATH")
 
-    if os.getenv("ONNX_DOWNLOAD_URL") is None:
+    if os.getenv("ONNX_FALLBACK_DOWNLOAD_URL") is None:
         logger.warning("ONNX DOWNLOAD URL environment variable is not set, defaulting to https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx")
-        config_dict["ONNX_DOWNLOAD_URL"] = "https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx"
+        config_dict["ONNX_FALLBACK_DOWNLOAD_URL"] = "https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx"
     else:
-        config_dict["ONNX_DOWNLOAD_URL"] = os.getenv("ONNX_DOWNLOAD_URL")
+        config_dict["ONNX_FALLBACK_DOWNLOAD_URL"] = os.getenv("ONNX_FALLBACK_DOWNLOAD_URL")
     
     return config_dict

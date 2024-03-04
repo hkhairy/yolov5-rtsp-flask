@@ -27,7 +27,7 @@ stream_loader = RTSPOpenCVStreamLoader(config["RTSP_URL"], config["THREAD_RETRY_
 model = Model(
     ModelLoader.load_model(
         config["ONNX_LOCAL_FILE_PATH"],
-        config["ONNX_DOWNLOAD_URL"]
+        config["ONNX_FALLBACK_DOWNLOAD_URL"]
     ),
     iou_threshold=config["IOU_THRESHOLD"],
     score_threshold=config["OBJECT_DETECTION_SCORE"]
