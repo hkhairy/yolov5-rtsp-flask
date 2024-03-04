@@ -1,7 +1,6 @@
 ######################################## Stage 1 ######################################
 FROM python:3.11 AS Builder
-LABEL org.opencontainers.image.source="https://github.com/hkhairy/yolov5-rtsp-flask"
-
+LABEL org.opencontainers.image.source "https://github.com/hkhairy/yolov5-rtsp-flask"
 RUN pip install "poetry==1.7.1" && poetry self add "poetry-plugin-export==1.6.0"
 ARG yolo_model="yolov5s.onnx"
 RUN wget "https://github.com/ultralytics/yolov5/releases/download/v7.0/${yolo_model}" --output-document "yolov5.onnx"
@@ -17,6 +16,7 @@ RUN poetry build --format wheel
 
 ############################################## Stage 2 ########################################################
 FROM python:3.11-slim AS Runner
+LABEL org.opencontainers.image.source "https://github.com/hkhairy/yolov5-rtsp-flask"
 RUN apt update && apt install && apt install -y ffmpeg 
 
 COPY --from=Builder /yolov5.onnx /yolov5.onnx
