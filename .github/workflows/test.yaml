@@ -1,4 +1,4 @@
-name: test
+name: test and build
 
 # this workflow would be updated if we decide to have a more mature setup and
 # have dev branch alongside branch protection rules for master and dev.
@@ -13,6 +13,7 @@ on:
       - 'flask-app/main.py'
       - 'flask-app/tests/**'
       - 'flask-app/src/**'
+      - 'flask-app/Dockerfile'
   pull_request:
     branches:
       - master
@@ -22,6 +23,7 @@ on:
       - 'flask-app/main.py'
       - 'flask-app/tests/**'
       - 'flask-app/src/**'
+      - 'flask-app/Dockerfile'
     
 
 jobs:
@@ -44,3 +46,28 @@ jobs:
 
       - name: run tests
         run: poetry run pytest tests/
+
+  build_push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: hkhairy
+          password: ${{ secrets.GH_PACKAGE_REGISTRY_KEY }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: flask-app/
+          push: true
+          tags: 'ghcr.io/hkhairy/flask_app:${{ github.run_id }}'
+
