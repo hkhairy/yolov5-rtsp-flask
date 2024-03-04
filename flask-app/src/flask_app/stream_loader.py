@@ -64,11 +64,11 @@ class RTSPOpenCVStreamLoader(StreamLoader):
                     self._is_running = False
                     break
 
-                logger.debug("Frame read from RTSP stream")
+                logger.info("Frame read from RTSP stream")
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 self._current_frame = np.array(frame)
                 time.sleep(0.01)
 
             cap.release()
-            logger.error("RTSP stream not open. Reconnecting in 5 seconds")
+            logger.error(f"RTSP stream not open. Reconnecting after {retry_interval} seconds")
             time.sleep(retry_interval)

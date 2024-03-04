@@ -1,9 +1,12 @@
+from typing import Any
+import logging
 import cv2
 import numpy as np
 from nptyping import NDArray, Shape
 from flask_app.yolov5 import DetectedObject
-from typing import Any
 
+
+logger = logging.getLogger(__name__) 
 
 class Annotator:
     """Annotator class
@@ -69,5 +72,6 @@ class Annotator:
                 color,
                 2,
             )
-
+            
+        logger.info("Annotated the image")
         return annotated_image

@@ -1,10 +1,13 @@
 import json
 import re
+import logging
 import numpy as np
 from nptyping import NDArray, Shape
 import cv2
 import onnxruntime as ort
 
+
+logger = logging.getLogger(__name__)
 
 class DetectedObject:
     """A class to represent a detected object"""
@@ -73,6 +76,8 @@ class Preprocessor:
         # transpose to BCHW from BHWC
         preprocessed = preprocessed.transpose([0, 3, 1, 2])
 
+        logger.info("Preprocessed an image")
+        logger.debug(f"Preprocessed image shape: {preprocessed.shape}, scale factor is {scale_factor}")
         return (preprocessed, scale_factor)
 
 
