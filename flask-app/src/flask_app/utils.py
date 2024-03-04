@@ -1,7 +1,6 @@
 import os
 import logging
 from typing import TypedDict
-from flask_app.exceptions import EnvVarNotSet
 
 
 logger = logging.getLogger(__name__)

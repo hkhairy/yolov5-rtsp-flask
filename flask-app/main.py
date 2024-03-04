@@ -11,7 +11,7 @@ from flask import Flask
 from flask import request, jsonify
 
 # logging setup
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("flask_app")
 logging.basicConfig(level=logging.INFO)
 
 # get the configuration
