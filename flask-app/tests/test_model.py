@@ -1,10 +1,21 @@
 import numpy as np
 from flask_app.yolov5 import Model, ModelLoader
+from flask_app.utils import get_config_env_vars
+
+config = get_config_env_vars()
+
 
 def test_post_processing_nms():
     """When there are overlapping boxes, the non-max suppression should only return one box
     """
-    model = Model(ModelLoader.load_model("yolov5s.onnx"))
+    model = Model(
+        ModelLoader.load_model(
+            config["ONNX_LOCAL_FILE_PATH"],
+            config["ONNX_DOWNLOAD_URL"]
+        ),
+        config["IOU_THRESHOLD"],
+        config["OBJECT_DETECTION_SCORE"]
+    )
     
     xc, yc, w, h, score = 0.5, 0.5, 0.5, 0.5, 0.5
     overlapping_boxes = np.array([[xc, yc, w, h, score]])
@@ -18,7 +29,14 @@ def test_post_processing_nms():
 def test_post_processing_detected_object():
     """given the model output after nms, the detected object should have the correct score, and correct boundaries
     """
-    model = Model(ModelLoader.load_model("yolov5s.onnx"))
+    model = Model(
+        ModelLoader.load_model(
+            config["ONNX_LOCAL_FILE_PATH"],
+            config["ONNX_DOWNLOAD_URL"]
+        ),
+        config["IOU_THRESHOLD"],
+        config["OBJECT_DETECTION_SCORE"]
+    )
 
     xc, yc, w, h, object_detection_score = 1, 1, 1, 1, 0.9
     predicted_class_index = 0

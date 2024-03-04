@@ -4,6 +4,9 @@ import cv2
 import numpy as np
 from flask_app.stream_loader import RTSPOpenCVStreamLoader
 from flask_app.exceptions import VideoCapError
+from flask_app.utils import get_config_env_vars
+
+config = get_config_env_vars()
 
 def test_frames_loading_successfully(mocker):
     # Ideally, we would use dependency injection and create a mock class

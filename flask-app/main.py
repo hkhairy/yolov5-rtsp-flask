@@ -2,11 +2,11 @@ import os
 import logging
 import datetime
 import cv2
-from nptyping import NDArray, Shape
 from flask_app.stream_loader import RTSPOpenCVStreamLoader
 from flask_app.exceptions import VideoCapError
 from flask_app.yolov5 import Model, Preprocessor, ModelLoader
 from flask_app.annotator import Annotator
+from flask_app.utils import get_config_env_vars
 from flask import Flask
 from flask import request, jsonify
 
@@ -14,11 +14,25 @@ from flask import request, jsonify
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+# get the configuration
+config = get_config_env_vars()
+
+# set the output directory
+os.makedirs(config["OUTPUT_DIR"], exist_ok=True)
 
 # Initialize the Stream Loader
-stream_loader = RTSPOpenCVStreamLoader("rtsp://localhost:8554/stream", 5)
+stream_loader = RTSPOpenCVStreamLoader(config["RTSP_URL"], config["THREAD_RETRY_INTERVAL"])
+
 # Load the model
-model = Model(ModelLoader.load_model("yolov5s.onnx"))
+model = Model(
+    ModelLoader.load_model(
+        config["ONNX_LOCAL_FILE_PATH"],
+        config["ONNX_DOWNLOAD_URL"]
+    ),
+    iou_threshold=config["IOU_THRESHOLD"],
+    score_threshold=config["OBJECT_DETECTION_SCORE"]
+)
+
 # initialize the flask app
 app = Flask(__name__)
 

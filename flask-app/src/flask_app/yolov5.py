@@ -84,7 +84,7 @@ class Preprocessor:
 
 class ModelLoader():
     @staticmethod
-    def load_model(model_path: str) -> ort.InferenceSession:
+    def load_model(model_path: str, download_url: str) -> ort.InferenceSession:
         """Load the model from the given path, or download it if it doesn't exist
 
         Args:
@@ -97,7 +97,7 @@ class ModelLoader():
             logger.info("Found the model file")
         else:
             logger.warn("Model file not found, trying to download it")
-            model_binaries = requests.get("https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx")
+            model_binaries = requests.get(download_url)
             with open(model_path, "wb") as f:
                 f.write(model_binaries.content)
             logger.info("Model downloaded")
@@ -109,8 +109,10 @@ class Model:
     like non-max-suppression, and getting the detected objects
     """
 
-    def __init__(self, model: ort.InferenceSession):
+    def __init__(self, model: ort.InferenceSession, iou_threshold: float, score_threshold: float):
         self.model = model
+        self.iou_threshold = iou_threshold
+        self.score_threshold = score_threshold
         self.class_mapping = Model._get_class_index_to_name_mapping(self.model)
 
     def predict(
@@ -144,8 +146,6 @@ class Model:
         self,
         boxes: NDArray[Shape["25200, 4"], np.float16],
         scores: NDArray[Shape["25200"], np.float16],
-        score_threshold: float = 0.4,
-        iou_threshold: float = 0.5,
     ) -> NDArray[Shape["*"], np.int16]:
         """Perform non-max suppression on the boxes and scores
 
@@ -159,7 +159,7 @@ class Model:
             NDArray[Shape["*"], np.int16]: The indices of the boxes to keep
         """
         # convert the boxes to the format that the nms function expects
-        boxes_indices = cv2.dnn.NMSBoxes(boxes, scores, score_threshold, iou_threshold)
+        boxes_indices = cv2.dnn.NMSBoxes(boxes, scores, self.score_threshold, self.iou_threshold)
 
         return np.array(boxes_indices, dtype=np.int16)
 
