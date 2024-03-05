@@ -25,7 +25,12 @@ services:
       - 8080:8080
     volumes:
       - ./output:/output
-    env_file:
-      - ./flask-app/.env.container
+    environment:
+      - RTSP_URL=rtsp://rtsp_server:8554/stream
+      - THREAD_RETRY_INTERVAL=5
+      - IOU_THRESHOLD=0.5
+      - OBJECT_DETECTION_SCORE=0.4
+      - ONNX_FALLBACK_DOWNLOAD_URL=https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.onnx
+      - ONNX_LOCAL_FILE_PATH=yolov5.onnx
     depends_on:
       - rtsp_server
